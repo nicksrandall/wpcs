@@ -27,8 +27,8 @@ const action = (args, options) => {
   }
 
   let excludes = [];
-  if (options.excludes) {
-    excludes = options.excludes.split(",").map(item => {
+  if (options.excludes && options.excludes.length) {
+    excludes = options.excludes.map(item => {
       item = item.trim();
       if (!path.extname(item)) {
         item += "/**";
@@ -82,7 +82,7 @@ const action = (args, options) => {
       totals.errors > 0 || (totals.warnings > 0 && !options.skipWarning);
 
     if (options.json) {
-      if (options.autofix) {
+      if (!options.noFix) {
         wpcs.fix();
         return;
       }
@@ -138,13 +138,11 @@ const action = (args, options) => {
       );
       logger.blank();
 
-      if (!options.autofix) {
+      if (options.noFix) {
         process.exit(1);
       }
 
-      if (options.autofix) {
-        wpcs.fix();
-      }
+      wpcs.fix();
     } else {
       spinner.succeed("Done. No Error or Warning Found.");
       logger.blank();
@@ -196,9 +194,9 @@ program
     )}.`,
     program.STRING
   )
-  .option("--autofix", "Auto fix errors.", program.BOOLEAN)
+  .option("--no-fix", "Do not auto fix errors.", program.BOOLEAN)
   .option("--skip-warning", "Skip Warning.", program.BOOLEAN)
-  .option("--excludes", "Ignore paths, separated by commas.", program.STRING)
+  .option("--excludes <paths>", "Ignore paths, separated by commas.", program.LIST)
   .option("--json", "Print output in JSON format", program.BOOLEAN)
   .action(action);
 
