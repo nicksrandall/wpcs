@@ -16,9 +16,9 @@ const simpleDotsLoader = {
 };
 
 const action = (args, options) => {
-  let dirpath = args.path;
-  if (!dirpath) {
-    dirpath = process.cwd();
+  let dirpaths = args.path;
+  if (!dirpaths || dirpaths.length === 0) {
+    dirpaths = [process.cwd()];
   }
 
   let rule = options.rule;
@@ -38,7 +38,7 @@ const action = (args, options) => {
   }
 
   let spinner;
-  const wpcs = new WPCS(dirpath, rule, excludes);
+  const wpcs = new WPCS(dirpaths, rule, excludes);
   const logs = {};
 
   wpcs.process.on("error", err => {
@@ -186,7 +186,7 @@ const action = (args, options) => {
 program
   .version(pkg.version)
   .description("Check WordPress Coding Standard")
-  .argument("[path]", "Script path could be a directory or filename.")
+  .argument("[path...]", "Script path could be a directory or filename.", program.LIST)
   .option(
     "--rule <rulename>",
     `Default rule is WordPress-Core. ${rulesetList.join(
