@@ -80,5 +80,7 @@ wpcs - Check WordPress Coding Standard
     --excludes          Excludes Path. optional
 ```
 
+## This repository is a fork of some great work by [oknoorap](https://github.com/oknoorap)
+
 ## License
-MIT © [oknoorap](https://github.com/oknoorap)
+MIT

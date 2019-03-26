@@ -1,201 +1,211 @@
 #!/usr/bin/env node
 
-const path = require('path')
-const program = require('caporal')
-const updateNotifier = require('update-notifier')
-const ora = require('ora')
-const chalk = require('chalk')
-const pkg = require('../package.json')
-const WPCS = require('../index')
-const logger = require('../lib/logger')
-const {rulesetList, rulesetTypes} = require('../lib/fixtures')
+const path = require("path");
+const program = require("caporal");
+const updateNotifier = require("update-notifier");
+const ora = require("ora");
+const chalk = require("chalk");
+const pkg = require("../package.json");
+const WPCS = require("../index");
+const logger = require("../lib/logger");
+const { rulesetList, rulesetTypes } = require("../lib/fixtures");
 
 const simpleDotsLoader = {
   interval: 70,
-  frames: [
-    '.  ',
-    '.. ',
-    ' ..',
-    ' ..',
-    '  .',
-    '   '
-  ]
-}
+  frames: [".  ", ".. ", " ..", " ..", "  .", "   "]
+};
 
 const action = (args, options) => {
-  let dirpath = args.path
+  let dirpath = args.path;
   if (!dirpath) {
-    dirpath = process.cwd()
+    dirpath = process.cwd();
   }
 
-  let rule = options.rule
+  let rule = options.rule;
   if (!rule) {
-    rule = `${rulesetTypes.WORDPRESS_EXTRA},${rulesetTypes.WORDPRESS_DOCS}`
+    rule = `${rulesetTypes.WORDPRESS_CORE}`;
   }
 
-  let excludes = []
+  let excludes = [];
   if (options.excludes) {
-    excludes = options.excludes.split(',').map(item => {
-      item = item.trim()
+    excludes = options.excludes.split(",").map(item => {
+      item = item.trim();
       if (!path.extname(item)) {
-        item += '/**'
+        item += "/**";
       }
-      return `**/${item}`
-    })
+      return `**/${item}`;
+    });
   }
 
-  let spinner
-  const wpcs = new WPCS(dirpath, rule, excludes)
-  const logs = {}
+  let spinner;
+  const wpcs = new WPCS(dirpath, rule, excludes);
+  const logs = {};
 
-  wpcs.process.on('error', err => {
-    logger.blank()
-    logger.blank()
-    logger.tab(`${chalk.underline.white('Error')}: `)
-    logger.error2(err)
-    logger.blank()
-  })
+  wpcs.process.on("error", err => {
+    logger.blank();
+    logger.blank();
+    logger.tab(`${chalk.underline.white("Error")}: `);
+    logger.error2(err);
+    logger.blank();
+  });
 
-  wpcs.on('start', () => {
+  wpcs.on("start", () => {
     if (!options.json) {
-      logger.blank()
-      spinner = ora('Scanning Files').start()
-      spinner.spinner = simpleDotsLoader
+      logger.blank();
+      spinner = ora("Scanning Files").start();
+      spinner.spinner = simpleDotsLoader;
     }
-  })
+  });
 
-  wpcs.on('scan', filename => {
+  wpcs.on("scan", filename => {
     if (!options.json) {
-      spinner.text = filename ? `Scanning ${filename}` : 'Working...'
+      spinner.text = filename ? `Scanning ${filename}` : "Working...";
     }
-  })
+  });
 
   const addToLog = (filename, info) => {
     if (!logs[filename]) {
-      logs[filename] = []
+      logs[filename] = [];
     }
 
-    logs[filename].push(info)
-  }
+    logs[filename].push(info);
+  };
 
-  wpcs.on('error', addToLog)
+  wpcs.on("error", addToLog);
 
   if (!options.skipWarning) {
-    wpcs.on('warning', addToLog)
+    wpcs.on("warning", addToLog);
   }
 
-  wpcs.on('done', totals => {
-    const hasViolations = totals.errors > 0 || (totals.warnings > 0 && !options.skipWarning)
+  wpcs.on("done", totals => {
+    const hasViolations =
+      totals.errors > 0 || (totals.warnings > 0 && !options.skipWarning);
 
     if (options.json) {
       if (options.autofix) {
-        wpcs.fix()
-        return
+        wpcs.fix();
+        return;
       }
 
-      logger.json(logs)
+      logger.json(logs);
 
       if (hasViolations) {
-        process.exit(1)
+        process.exit(1);
       } else {
-        process.exit()
+        process.exit();
       }
     }
 
     if (hasViolations) {
-      spinner.succeed(`Scanned ${totals.files} files.`)
+      spinner.succeed(`Scanned ${totals.files} files.`);
 
       for (const filename in logs) {
         if (Object.prototype.hasOwnProperty.call(logs, filename)) {
-          logger.blank()
-          logger.tab(`${chalk.underline.white(filename)}`)
+          logger.blank();
+          logger.tab(`${chalk.underline.white(filename)}`);
           logs[filename].forEach(item => {
             switch (item.type) {
-              case 'ERROR':
-                logger.error(item)
-                break
-              case 'WARNING':
-                logger.warning(item)
-                break
+              case "ERROR":
+                logger.error(item);
+                break;
+              case "WARNING":
+                logger.warning(item);
+                break;
             }
-          })
+          });
         }
       }
 
-      let hasFixableCodes = ''
+      let hasFixableCodes = "";
       if (totals.fixables > 0) {
-        const singplural = totals.fixables > 1 ? 's are' : ' is'
-        hasFixableCodes = `. Good news, ${chalk.underline.green(totals.fixables)} file${singplural} fixable.`
+        const singplural = totals.fixables > 1 ? "s are" : " is";
+        hasFixableCodes = `. Good news, ${chalk.underline.green(
+          totals.fixables
+        )} file${singplural} fixable.`;
       }
 
-      let warningsMsg = ''
+      let warningsMsg = "";
       if (!options.skipWarning) {
-        warningsMsg = ` and ${chalk.underline.white(totals.warnings)} warnings`
+        warningsMsg = ` and ${chalk.underline.white(totals.warnings)} warnings`;
       }
 
-      logger.blank()
-      logger.symbol(`You've got ${chalk.underline.white(totals.errors)} errors${warningsMsg}${hasFixableCodes}`, 'error')
-      logger.blank()
+      logger.blank();
+      logger.symbol(
+        `You've got ${chalk.underline.white(
+          totals.errors
+        )} errors${warningsMsg}${hasFixableCodes}`,
+        "error"
+      );
+      logger.blank();
 
       if (!options.autofix) {
-        process.exit(1)
+        process.exit(1);
       }
 
       if (options.autofix) {
-        wpcs.fix()
+        wpcs.fix();
       }
     } else {
-      spinner.succeed('Done. No Error or Warning Found.')
-      logger.blank()
-      process.exit()
+      spinner.succeed("Done. No Error or Warning Found.");
+      logger.blank();
+      process.exit();
     }
-  })
+  });
 
-  let fixloader
+  let fixloader;
 
-  wpcs.on('fix', () => {
+  wpcs.on("fix", () => {
     if (!options.json) {
-      logger.blank()
-      fixloader = ora('Fixing Violations').start()
-      fixloader.spinner = simpleDotsLoader
+      logger.blank();
+      fixloader = ora("Fixing Violations").start();
+      fixloader.spinner = simpleDotsLoader;
     }
-  })
+  });
 
-  wpcs.on('fixing', filename => {
+  wpcs.on("fixing", filename => {
     if (!options.json) {
-      fixloader.text = `Fixing ${filename}`
+      fixloader.text = `Fixing ${filename}`;
     }
-  })
+  });
 
-  wpcs.on('fixed', files => {
-    const fixedMsg = (files.length > 0) ? `${files.length} files has been fixed.` : 'Nothing Fixed.'
+  wpcs.on("fixed", files => {
+    const fixedMsg =
+      files.length > 0
+        ? `${files.length} files has been fixed.`
+        : "Nothing Fixed.";
 
     if (options.json) {
       logger.json({
         message: fixedMsg
-      })
+      });
     } else {
-      fixloader.succeed(fixedMsg)
-      logger.blank()
+      fixloader.succeed(fixedMsg);
+      logger.blank();
     }
-  })
-}
+  });
+};
 
 program
   .version(pkg.version)
-  .description('Check WordPress Coding Standard')
-  .argument('[path]', 'Script path could be a directory or filename.')
-  .option('--rule <rulename>', `Default rule is WordPress-Extra + WordPress-Docs. ${rulesetList.join(' | ')}.`, program.STRING)
-  .option('--autofix', 'Auto fix errors.', program.BOOLEAN)
-  .option('--skip-warning', 'Skip Warning.', program.BOOLEAN)
-  .option('--excludes', 'Ignore paths, separated by commas.', program.STRING)
-  .option('--json', 'Print output in JSON format', program.BOOLEAN)
-  .action(action)
+  .description("Check WordPress Coding Standard")
+  .argument("[path]", "Script path could be a directory or filename.")
+  .option(
+    "--rule <rulename>",
+    `Default rule is WordPress-Core. ${rulesetList.join(
+      " | "
+    )}.`,
+    program.STRING
+  )
+  .option("--autofix", "Auto fix errors.", program.BOOLEAN)
+  .option("--skip-warning", "Skip Warning.", program.BOOLEAN)
+  .option("--excludes", "Ignore paths, separated by commas.", program.STRING)
+  .option("--json", "Print output in JSON format", program.BOOLEAN)
+  .action(action);
 
-program.parse(process.argv)
+program.parse(process.argv);
 
 // Notify update, cached every hour
 updateNotifier({
   pkg,
   updateCheckInterval: 1000 * 60 * 60
-}).notify()
+}).notify();

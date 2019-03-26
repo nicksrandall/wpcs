@@ -1,40 +1,22 @@
 {
-  "name": "wpcs",
-  "version": "1.7.3",
+  "name": "wpcs-cli",
+  "version": "1.0.0",
   "description": "WordPress Coding Standards in NodeJS",
   "main": "index.js",
   "scripts": {
-    "test": "xo && ava --verbose",
+    "test": "ava",
+    "format": "prettier --write lib/**/*.{js,json,css,md}",
     "pull-wpcs": "git subtree pull --prefix scripts/wordpress-coding-standards https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards.git master --squash",
-    "update-script": "yarn pull-wpcs"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/oknoorap/wpcs.git"
+    "pull-phpcbf": "cd scripts && curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcbf.phar",
+    "pull-phpcs": "cd scripts && curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar",
+    "update-script": "npm run pull-wpcs && npm run pull-phpcs && npm run pull-phpcbf"
   },
   "keywords": [
     "wordpress",
     "unit-test"
   ],
-  "author": "Ribhararnus Pracutian <oknoorap@gmail.com> (https://www.oknoorap.com)",
+  "author": "Nick Randall",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/oknoorap/wpcs/issues"
-  },
-  "homepage": "https://github.com/oknoorap/wpcs#readme",
-  "devDependencies": {
-    "ava": "^0.22.0",
-    "xo": "^0.18.2"
-  },
-  "xo": {
-    "esnext": true,
-    "space": true,
-    "semicolon": false,
-    "ignores": [
-      "**/test/test-theme/**",
-      "**/scripts/**"
-    ]
-  },
   "ava": {
     "files": [
       "test/test.js"
@@ -50,12 +32,15 @@
     "scripts"
   ],
   "dependencies": {
-    "async": "^2.6.0",
-    "caporal": "^0.7.0",
-    "chalk": "^2.3.2",
-    "globby": "^6.1.0",
+    "async": "^2.6.2",
+    "caporal": "^1.1.0",
+    "chalk": "^2.4.2",
+    "globby": "^9.1.0",
     "log-symbols": "^2.2.0",
-    "ora": "^2.0.0",
-    "update-notifier": "^2.3.0"
+    "ora": "^3.2.0",
+    "update-notifier": "^2.5.0"
+  },
+  "devDependencies": {
+    "ava": "^1.4.0"
   }
 }
