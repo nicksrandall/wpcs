@@ -38,7 +38,7 @@ const action = (args, options) => {
   }
 
   let spinner;
-  const wpcs = new WPCS(dirpaths, rule, excludes);
+  const wpcs = new WPCS(dirpaths, rule, excludes, options.debug);
   const logs = {};
 
   wpcs.process.on("error", err => {
@@ -198,6 +198,7 @@ program
   .option("--skip-warning", "Skip Warning.", program.BOOLEAN)
   .option("--excludes <paths>", "Ignore paths, separated by commas.", program.LIST)
   .option("--json", "Print output in JSON format", program.BOOLEAN)
+  .option("--debug", "add debug console statements", program.BOOLEAN)
   .action(action);
 
 program.parse(process.argv);
