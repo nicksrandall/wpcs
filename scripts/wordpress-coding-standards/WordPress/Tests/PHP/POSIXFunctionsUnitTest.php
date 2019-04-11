@@ -7,7 +7,7 @@
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Tests\PHP;
+namespace WordPressCS\WordPress\Tests\PHP;
 
 use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
 
@@ -36,7 +36,6 @@ class POSIXFunctionsUnitTest extends AbstractSniffUnitTest {
 			24 => 1,
 			26 => 1,
 		);
-
 	}
 
 	/**
@@ -46,7 +45,6 @@ class POSIXFunctionsUnitTest extends AbstractSniffUnitTest {
 	 */
 	public function getWarningList() {
 		return array();
-
 	}
 
-} // End class.
+}

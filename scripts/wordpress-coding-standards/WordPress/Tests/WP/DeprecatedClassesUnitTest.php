@@ -7,7 +7,7 @@
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Tests\WP;
+namespace WordPressCS\WordPress\Tests\WP;
 
 use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
 
@@ -28,8 +28,7 @@ class DeprecatedClassesUnitTest extends AbstractSniffUnitTest {
 	 */
 	public function getErrorList() {
 		return array_fill( 9, 7, 1 );
-
-	} // End getErrorList().
+	}
 
 	/**
 	 * Returns the lines where warnings should occur.
@@ -38,7 +37,6 @@ class DeprecatedClassesUnitTest extends AbstractSniffUnitTest {
 	 */
 	public function getWarningList() {
 		return array();
-
 	}
 
-} // End class.
+}

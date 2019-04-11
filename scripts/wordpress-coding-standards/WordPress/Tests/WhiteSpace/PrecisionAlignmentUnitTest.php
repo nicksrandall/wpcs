@@ -7,7 +7,7 @@
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Tests\WhiteSpace;
+namespace WordPressCS\WordPress\Tests\WhiteSpace;
 
 use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
 
@@ -28,22 +28,7 @@ class PrecisionAlignmentUnitTest extends AbstractSniffUnitTest {
 	private $tab_width = 4;
 
 	/**
-	 * Get a list of CLI values to set before the file is tested.
-	 *
-	 * Used by PHPCS 2.x.
-	 *
-	 * @param string $testFile The name of the file being tested.
-	 *
-	 * @return array
-	 */
-	public function getCliValues( $testFile ) {
-		return array( '--tab-width=' . $this->tab_width );
-	}
-
-	/**
 	 * Set CLI values before the file is tested.
-	 *
-	 * Used by PHPCS 3.x.
 	 *
 	 * @param string                  $testFile The name of the file being tested.
 	 * @param \PHP_CodeSniffer\Config $config   The config data for the test run.
@@ -52,6 +37,11 @@ class PrecisionAlignmentUnitTest extends AbstractSniffUnitTest {
 	 */
 	public function setCliValues( $testFile, $config ) {
 		$config->tabWidth = $this->tab_width;
+
+		// Testing a file with "--ignore-annotations".
+		if ( 'PrecisionAlignmentUnitTest.6.inc' === $testFile ) {
+			$config->annotations = false;
+		}
 	}
 
 	/**
@@ -79,7 +69,38 @@ class PrecisionAlignmentUnitTest extends AbstractSniffUnitTest {
 					30 => 1,
 					31 => 1,
 					32 => 1,
+					34 => 1, // Whitelist comment deprecation warning.
 					39 => 1,
+					65 => 1,
+				);
+
+			case 'PrecisionAlignmentUnitTest.4.inc':
+				return array(
+					1 => 1,
+					2 => 1,
+					3 => 1,
+					4 => 1,
+					5 => 1,
+				);
+
+			case 'PrecisionAlignmentUnitTest.5.inc':
+				return array(
+					9  => 1,
+					14 => 1,
+					19 => 1,
+					24 => 1,
+					29 => 1,
+					34 => 1,
+					39 => 1,
+					44 => 1,
+					54 => 1,
+					56 => 1,
+					58 => 1,
+				);
+
+			case 'PrecisionAlignmentUnitTest.6.inc':
+				return array(
+					4 => 1,
 				);
 
 			case 'PrecisionAlignmentUnitTest.css':
@@ -101,4 +122,4 @@ class PrecisionAlignmentUnitTest extends AbstractSniffUnitTest {
 		}
 	}
 
-} // End class.
+}

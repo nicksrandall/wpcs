@@ -7,7 +7,7 @@
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Tests\WP;
+namespace WordPressCS\WordPress\Tests\WP;
 
 use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
 
@@ -28,7 +28,6 @@ class DiscouragedFunctionsUnitTest extends AbstractSniffUnitTest {
 	 */
 	public function getErrorList() {
 		return array();
-
 	}
 
 	/**
@@ -41,7 +40,6 @@ class DiscouragedFunctionsUnitTest extends AbstractSniffUnitTest {
 			3 => 1,
 			5 => 1,
 		);
-
 	}
 
-} // End class.
+}

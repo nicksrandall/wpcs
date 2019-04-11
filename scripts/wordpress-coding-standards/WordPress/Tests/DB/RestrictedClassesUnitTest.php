@@ -7,10 +7,10 @@
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Tests\DB;
+namespace WordPressCS\WordPress\Tests\DB;
 
 use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
-use WordPress\AbstractFunctionRestrictionsSniff;
+use WordPressCS\WordPress\AbstractFunctionRestrictionsSniff;
 
 /**
  * Unit test class for the DB_RestrictedClasses sniff.
@@ -135,10 +135,8 @@ class RestrictedClassesUnitTest extends AbstractSniffUnitTest {
 
 			default:
 				return array();
-
-		} // End switch().
-
-	} // End getErrorList().
+		}
+	}
 
 	/**
 	 * Returns the lines where warnings should occur.
@@ -147,7 +145,6 @@ class RestrictedClassesUnitTest extends AbstractSniffUnitTest {
 	 */
 	public function getWarningList() {
 		return array();
-
 	}
 
-} // End class.
+}
