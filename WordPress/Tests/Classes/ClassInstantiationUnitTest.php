@@ -7,7 +7,7 @@
  * @license https://opensource.org/licenses/MIT MIT
  */
 
-namespace WordPress\Tests\Classes;
+namespace WordPressCS\WordPress\Tests\Classes;
 
 use PHP_CodeSniffer\Tests\Standards\AbstractSniffUnitTest;
 
@@ -68,7 +68,6 @@ class ClassInstantiationUnitTest extends AbstractSniffUnitTest {
 
 			default:
 				return array();
-
 		}
 	}
 
@@ -79,7 +78,6 @@ class ClassInstantiationUnitTest extends AbstractSniffUnitTest {
 	 */
 	public function getWarningList() {
 		return array();
-
 	}
 
-} // End class.
+}
